@@ -5,7 +5,7 @@ require 'rails/generators/migration'
 module DataMigrate
   module Generators
     class DataMigrationGenerator < Rails::Generators::NamedBase
-      namespace 'data_migration_with_stats'
+      namespace 'data_migration'
       include Rails::Generators::Migration
 
       argument :attributes, type: :array, default: [], banner: 'field:type field:type'
