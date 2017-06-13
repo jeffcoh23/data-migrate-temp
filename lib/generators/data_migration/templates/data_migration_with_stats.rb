@@ -1,4 +1,3 @@
-require_relative './helpers'
 class <%= migration_class_name %> < ActiveRecord::Migration
   def self.up
     print_memory_usage do
