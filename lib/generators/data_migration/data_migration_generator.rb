@@ -4,7 +4,7 @@ require 'rails/generators/migration'
 
 module DataMigrate
   module Generators
-    class DataMigrationWithStatsGenerator < Rails::Generators::NamedBase
+    class DataMigrationGenerator < Rails::Generators::NamedBase
       namespace "data_migration"
       include Rails::Generators::Migration
 
