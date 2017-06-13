@@ -1,4 +1,4 @@
-require 'generators/data_migrate'
+require 'generators/data_migrate_with_stats'
 require 'rails/generators'
 require 'rails/generators/migration'
 
