@@ -12,7 +12,7 @@ module DataMigrate
 
       def create_data_migration
         set_local_assigns!
-        migration_template 'data_migration_with_stats.rb', "db/data/#{file_name}.rb"
+        migration_template 'data_migration.rb', "db/data/#{file_name}.rb"
       end
 
       protected

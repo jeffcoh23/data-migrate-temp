@@ -99,6 +99,41 @@ namespace :db do
       end
     end
 
+    namespace :up do
+      desc 'Runs the "up" for a given migration VERSION and provides memory and time information. (options both=false)'
+      namespace :with_data do
+        task :with_stats => :environment do
+          version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
+          raise "VERSION is required" unless version
+          assure_data_schema_table
+          run_both = ENV["BOTH"] == "true"
+          migrations = pending_migrations.keep_if{|m| m[:version] == version}
+
+          unless run_both || migrations.size < 2
+            migrations = migrations.slice(0,1)
+          end
+
+          migrations.each do |migration|
+            if migration[:kind] == :data
+              ActiveRecord::Migration.write("== %s %s" % ['Data', "=" * 71])
+              print_memory_usage do
+                print_time_spent do
+                  DataMigrate::DataMigrator.run(:up, "db/data/", migration[:version])
+                end
+              end
+            else
+              print_memory_usage do
+                print_time_spent do
+                  ActiveRecord::Migration.write("== %s %s" % ['Schema', "=" * 69])
+                  ActiveRecord::Migrator.run(:up, "db/migrate/", migration[:version])
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+
     namespace :down do
       desc 'Runs the "down" for a given migration VERSION. (option BOTH=false)'
       task :with_data => :environment do
@@ -245,6 +280,20 @@ namespace :data do
       raise "VERSION is required" unless version
       DataMigrate::DataMigrator.run(:up, "db/data/", version)
     end
+
+    desc 'Runs the "up" for a given migration VERSION and provides memory and time information.'
+      namespace :up do
+        task :with_stats => :environment do
+          assure_data_schema_table
+          version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
+          raise "VERSION is required" unless version
+          print_memory_usage do
+            print_time_spent do
+              DataMigrate::DataMigrator.run(:up, "db/data/", version)
+            end
+          end
+        end
+      end
 
     desc 'Runs the "down" for a given migration VERSION.'
     task :down => :environment do
